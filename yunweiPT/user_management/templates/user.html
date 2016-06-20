@@ -232,6 +232,7 @@
                     type:'post',
                     url:'/user/encryption/',
                     data:unencrypwd,
+                    headers:{'X-CSRFToken':csrftoken},
                     dataType: 'json',
                     async:false,
                     success:function(arg){
@@ -246,6 +247,7 @@
                 $.ajax({
                     type:'post',
                     url:'/api/user/',
+                    headers:{'X-CSRFToken':csrftoken},
                     data:info,
                     contentType:'application/json',
                     success:function(){
@@ -292,6 +294,7 @@
                     $.each(Dels,function(i,val){
                         $.ajax({
                             type:'delete',
+                            headers:{'X-CSRFToken':csrftoken},
                             url:'/api/user/'+val+'/',
                             contentType:'application/json',
                             success:function(){
@@ -387,6 +390,7 @@
                 $.ajax({
                     type:'post',
                     url:'/user/checkpwd/',
+                    headers:{'X-CSRFToken':csrftoken},
                     data:pwd,
                     dataType: 'json',
                     async:false,
@@ -403,6 +407,7 @@
                 $.ajax({
                     type:'patch',
                     url:"/api/user/"+id+"/",
+                    headers:{'X-CSRFToken':csrftoken},
                     data:info,
                     contentType:'application/json',
                     success:function(){
