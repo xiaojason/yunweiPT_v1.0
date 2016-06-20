@@ -1,0 +1,426 @@
+{% extends "index_user.html" %}
+
+{% block body %}
+<div class="infomation"></div>
+<ul class="nav nav-tabs">
+    <li role="presentation" class="active"><a href="/assets/mgroom/1/">用户权限管理</a></li>
+</ul>
+    <div class="TabLe">
+        <table class="table table-striped">
+            <tr><th>选中删除</th><th>id</th><th>用户名</th><th>密码</th><th>是否激活</th><th>权限分配</th><th>操作</th></tr>
+            {% for i in model.result %}
+                <tr><td><input type="checkbox" class="delete" name="test" value="{{ i.id }}"/></td><td auto="id">{{ i.id }}</td><td auto="username">{{ i.username }}</td><td auto="password">{{ i.password }}</td><td auto="is_active">{{ i.is_active }}</td><td auto="pri">{{ i.privilege }}</td><td><a onclick="Edit(this)" data-toggle="modal" data-target="#exampleModal02" data-whatever="机器信息">修改</a></td></tr>
+            {% endfor %}
+        </table>
+        <input type="checkbox" id="choice"/>:全选&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-danger" id="delete">删除</button>
+        {{ model.pager }}
+    </div>
+        <div class="addroom">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="添加用户">添加用户</button>
+    </div>
+    <div style="height: 50px;"></div>
+{% endblock %}
+
+<!--添加层01-->
+{% block mtk %}
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exampleModalLabel">添加用户</h4>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">用户名:</label>
+                <input type="text" class="form-control" id="username01">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">密码:</label>
+                <input type="text" class="form-control" id="password01">
+              </div>
+              <div><span><strong>是否激活:</strong></span></div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" value="no" id="is_active01"> 激活
+                </label>
+              </div>
+              <div><span><strong>权限分配:</strong></span></div>
+              <div class="checkbox" id="privilege01">
+                <label>
+                  <input type="checkbox" value="1" id="usermg01"> 用户管理
+                </label>
+                  <label>
+                  <input type="checkbox" value="2" id="assetmg01"> 资产管理
+                </label>
+                <label>
+                  <input type="checkbox" value="3" id="optionmg01"> 操作管理
+                </label>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="Reclose()">关闭</button>
+            <button type="button" class="btn btn-primary" id="Add" data-dismiss="modal">保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--添加层01结束-->
+
+    <!--添加层02-->
+    <div class="modal fade" id="exampleModal02" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exampleModalLabel02">添加用户</h4>
+          </div>
+          <div class="modal-body">
+              <fieldset disabled>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">用户id:</label>
+                <input type="text" class="form-control" id="id">
+              </div>
+              </fieldset>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">用户名:</label>
+                <input type="text" class="form-control" id="username">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">密码:</label>
+                <input type="text" class="form-control" id="password">
+              </div>
+              <div><span><strong>是否激活:</strong></span></div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" value="no" id="is_active"> 激活
+                </label>
+              </div>
+              <div><span><strong>权限分配:</strong></span></div>
+              <div class="checkbox" id="privilege">
+                <label>
+                  <input type="checkbox" value="1" id="1"> 用户管理
+                </label>
+                  <label>
+                  <input type="checkbox" value="2" id="2"> 资产管理
+                </label>
+                <label>
+                  <input type="checkbox" value="3" id="3"> 操作管理
+                </label>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="Reclose()">关闭</button>
+            <button type="button" class="btn btn-primary" id="CAdd" data-dismiss="modal">保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--添加层02结束-->
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        //添加用户
+        $(function(){
+            //添加用户激活
+            $('#is_active01').click(function(){
+                if($(this).is(':checked')){
+                    $('#is_active01').attr('checked',true)
+                }else{
+                    $('#is_active01').attr('checked',false)
+                }
+            })
+            //权限用户
+            $('#usermg01').click(function(){
+                if($(this).is(':checked')){
+                    $('#usermg01').attr('checked',true)
+                }else{
+                    $('#usermg01').attr('checked',false)
+                }
+            })
+            //权限资产
+            $('#assetmg01').click(function(){
+                if($(this).is(':checked')){
+                    $('#assetmg01').attr('checked',true)
+                }else{
+                    $('#assetmg01').attr('checked',false)
+                }
+            })
+            //权限操作
+            $('#optionmg01').click(function(){
+                if($(this).is(':checked')){
+                    $('#optionmg01').attr('checked',true)
+                }else{
+                    $('#optionmg01').attr('checked',false)
+                }
+            })
+        })
+
+        //修改用户
+        $(function(){
+            //添加用户激活
+            $('#is_active').click(function(){
+                if($(this).is(':checked')){
+                    $('#is_active').attr('checked',true)
+                }else{
+                    $('#is_active').attr('checked',false)
+                }
+            })
+            //权限用户
+            $('#1').click(function(){
+                if($(this).is(':checked')){
+                    $('#1').attr('checked',true)
+                }else{
+                    $('#1').attr('checked',false)
+                }
+            })
+            //权限资产
+            $('#2').click(function(){
+                if($(this).is(':checked')){
+                    $('#2').attr('checked',true)
+                }else{
+                    $('#2').attr('checked',false)
+                }
+            })
+            //权限操作
+            $('#3').click(function(){
+                if($(this).is(':checked')){
+                    $('#3').attr('checked',true)
+                }else{
+                    $('#3').attr('checked',false)
+                }
+            })
+        })
+
+        $(function(){
+            $('#Add').click(function(){
+                var csrftoken = $.cookie('csrftoken');
+                var username01 = $('#username01').val()
+                var password01 = $('#password01').val()
+                if($('#is_active01').attr('checked')){
+                    var is_active01 = true
+                }else{
+                    var is_active01 = false
+                }
+
+                if($('#usermg01').attr('checked')){
+                    var privilege01 = '1,'
+                }else{
+                    var privilege01 = ''
+                }
+
+                if($('#assetmg01').attr('checked')){
+                    var privilege01 = privilege01 + "2,"
+                }else{
+                    var privilege01 = privilege01 + ''
+                }
+
+                if($('#optionmg01').attr('checked')){
+                    var privilege01 = privilege01 + "3,"
+                }else{
+                    var privilege01 = privilege01 + ''
+                }
+
+                //console.log(username01,password01,is_active01,privilege01)
+                var unencrypwd = JSON.stringify({'password':password01})
+                //获取加密码
+                $.ajax({
+                    type:'post',
+                    url:'/user/encryption/',
+                    data:unencrypwd,
+                    dataType: 'json',
+                    async:false,
+                    success:function(arg){
+                        window.encrypwd = arg['encryptionpwd']
+                        //console.log(window.encrypwd)
+                    }
+
+                })
+                //添加用户到数据库
+                var info = JSON.stringify({'username':username01,'password':window.encrypwd,'is_active':is_active01,'privilege':privilege01})
+                console.log(info)
+                $.ajax({
+                    type:'post',
+                    url:'/api/user/',
+                    data:info,
+                    contentType:'application/json',
+                    success:function(){
+                        var ele = '<div id="myAlert" class="alert alert-success">';
+                        ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a><strong>";
+                        ele = ele + "添加用户: " + "</strong>" + username01 + " " + "successfull!!!!!";
+                        ele = ele + "</dev>";
+                        $('.infomation').append(ele)
+                    },
+                    error:function(XMLHttpRequest){
+                       var info = XMLHttpRequest['responseText'];
+                       var ele = '<div id="myAlert" class="alert alert-danger">';
+                       ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a>";
+                       ele = ele + info + "</div>";
+                       $(".infomation").append(ele);
+                   }
+                })
+            })
+        })
+
+        //全选
+        $(function(){
+           $('#choice').click(function(){
+               if($('#choice').is(':checked')){
+                   $('.delete').attr('checked',true)
+               }else{
+                   $('.delete').attr('checked',false);
+                   window.location.reload()
+               }
+           })
+        });
+
+        //删除选中项
+        $(function(){
+            $('#delete').click(function(){
+                var csrftoken = $.cookie('csrftoken');
+                var Dels = [];
+                $("input[name='test']:checked").each(function(){
+                    var Del = $(this).val();
+                    Dels.push(Del)
+                });
+                if(Dels.length > 0){
+                    //console.log(Dels)
+                    $.each(Dels,function(i,val){
+                        $.ajax({
+                            type:'delete',
+                            url:'/api/user/'+val+'/',
+                            contentType:'application/json',
+                            success:function(){
+                                var ele = '<div id="myAlert" class="alert alert-success">'
+                                ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a><strong>";
+                                ele = ele + "删除用户: " + "</strong>" + val + " "+"successful!";
+                                ele = ele + "</dev>";
+                                $('.infomation').append(ele)
+                            },
+                            error:function(XMLHttpRequest){
+                                   var info = XMLHttpRequest['responseText'];
+                                   var ele = '<div id="myAlert" class="alert alert-danger">';
+                                   ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a>";
+                                   ele = ele + info + "</div>";
+                                   $(".infomation").append(ele);
+                            }
+                        })
+                    })
+                }else{
+                    var ele = '<div id="myAlert" class="alert alert-danger">';
+                    ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a><strong>";
+                    ele = ele + "删除用户: " + "</strong>" + "不能为空" + " "+"!!!!!";
+                    ele = ele + "</dev>";
+                    $(".infomation").append(ele)
+                }
+            })
+        })
+
+        //修改
+        function Edit(arg){
+            $(arg).parent().prevAll().each(function(){
+                var value = $(this).text()
+                var target_id = $(this).attr('auto');
+                //console.log(value)
+                if(target_id == "is_active"){
+                    if(value == "True"){
+                        $('#is_active').attr('checked',true)
+                    }
+                }
+                if(target_id == "pri"){
+                    if(value){
+                        var arr = value.split([','])
+                        for (i=0;i<arr.length;i++)
+                        {
+                            //console.log(arr[i])
+                            $('#'+arr[i]).attr('checked',true)
+                        }
+                    }
+                }
+                $("#"+target_id).val(value);
+            })
+        }
+
+        function Reclose() {
+        window.location.reload();
+        };
+
+        //提交修改数据
+        $(function(){
+            $('#CAdd').click(function(){
+                var csrftoken = $.cookie('csrftoken');
+                var id = $('#id').val()
+                var username = $('#username').val()
+                var password = $('#password').val()
+                if($('#is_active').attr('checked')){
+                    var is_active = true
+                }else{
+                    var is_active = false
+                }
+
+                if($('#1').attr('checked')){
+                    var privilege = '1,'
+                }else{
+                    var privilege = ''
+                }
+
+                if($('#2').attr('checked')){
+                    var privilege = privilege + "2,"
+                }else{
+                    var privilege = privilege + ''
+                }
+
+                if($('#3').attr('checked')){
+                    var privilege = privilege + "3,"
+                }else{
+                    var privilege = privilege + ''
+                }
+                //console.log(username,password,is_active,privilege)
+
+                var pwd = JSON.stringify({'password':password})
+                console.log(pwd)
+                //获取加密码
+                $.ajax({
+                    type:'post',
+                    url:'/user/checkpwd/',
+                    data:pwd,
+                    dataType: 'json',
+                    async:false,
+                    success:function(arg){
+                        window.newpwd = arg['encryptionpwd']
+                        //console.log(window.newpwd)
+                    }
+
+                });
+
+                //提交修改后用户信息到api
+                var info = JSON.stringify({'username':username,'password':window.newpwd,'is_active':is_active,"privilege":privilege})
+                console.log(info)
+                $.ajax({
+                    type:'patch',
+                    url:"/api/user/"+id+"/",
+                    data:info,
+                    contentType:'application/json',
+                    success:function(){
+                        var ele = '<div id="myAlert" class="alert alert-success">';
+                        ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a><strong>";
+                        ele = ele + "修改用户: " + "</strong>" + username + " " + "successfull!!!!!";
+                        ele = ele + "</dev>";
+                        $('.infomation').append(ele)
+                    },
+                    error:function(XMLHttpRequest) {
+                        var info = XMLHttpRequest['responseText'];
+                        var ele = '<div id="myAlert" class="alert alert-danger">';
+                        ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a>";
+                        ele = ele + info + "</div>";
+                        $(".infomation").append(ele);
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock %}

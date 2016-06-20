@@ -1,0 +1,395 @@
+{% extends 'index.html' %}
+
+{% block body %}
+    <div class="infomation"></div>
+    <ul class="nav nav-tabs">
+        <li role="presentation"><a href="/assets/mgroom/1/">机房管理</a></li>
+        <li role="presentation"><a href="/assets/mgcb/1/">机柜管理</a></li>
+        <li role="presentation" class="active"><a href="/assets/mgma/1/">机器管理</a></li>
+    </ul>
+    <div class="TabLe">
+        <table class="table table-striped">
+            <tr><th>选择</th><th>id</th><th>IP</th><th>角色</th><th>硬件信息</th><th>游戏服信息</th><th>机房信息</th><th>机柜信息</th><th>操作</th></tr>
+            {% for i in model.result %}
+                <tr><td><input type="checkbox" class="delete" name="test" value="{{ i.id }}"/></td><td auto="id">{{ i.id }}</td><td auto="ip">{{ i.ip }}</td><td auto="role">{{ i.role }}</td><td auto="hardware">{{ i.hardwareinfo }}</td><td auto="serverinfo">{{ i.gameinfo}}</td><td auto="macroom02">{{ i.room}}</td><td auto={{ i.room }}>{{ i.cb}}</td><td >
+                    <a onclick="Edit(this)" data-toggle="modal" data-target="#exampleModal02" data-whatever="机器信息">修改</a></td></tr>
+            {% endfor %}
+        </table>
+        <input type="checkbox" id="choice"/>:全选&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-danger" id="delete">删除</button>
+        {{ model.pager }}
+    </div>
+    <div class="addroom">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="机器信息">添加机器</button>
+    </div>
+    <div style="height: 50px;"></div>
+{% endblock %}
+
+<!--添加层01-->
+{% block mtk %}
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exampleModalLabel">添加机房信息</h4>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">IP:</label>
+                <input type="text" class="form-control" id="ip01">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">角色:</label>
+                <input type="text" class="form-control" id="role01">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">硬件信息:</label>
+                <input type="text" class="form-control" id="hardware01">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">游戏服信息:</label>
+                <input type="text" class="form-control" id="servers">
+              </div>
+              <div class="form-group">
+                <label for="message-text" class="control-label">机房:</label>
+                  <select class="form-control" id="macroom">
+                      <option selected="selected" >--请选择机房--</option>
+                      {% for i in model.macroom %}
+                          <option value="{{ i.id }}" text={{ i.macroom }}>{{ i.macroom }}</option>
+                      {% endfor %}
+                  </select>
+               </div>
+              <div class="form-group">
+                <label for="message-text" class="control-label">机柜:</label>
+                      <fieldset disabled>
+                      <select id="disabledSelect" class="form-control cabinet">
+                        <option>--请先选择机房--</option>
+                      </select>
+                  </fieldset>
+                  {% for k,v in model.cabinet.items %}
+                      {% if v %}
+                          <select class="form-control cabinet {{ k.id }}" style="display: none" id="{{ k.id }}">
+                            {% for i in v %}
+                                <option value="{{ i.id }}" text={{ i.cabinet }}>{{ i.cabinet }}</option>
+                            {% endfor %}
+                          </select>
+                      {% endif %}
+                  {% endfor %}
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="Reclose()">关闭</button>
+            <button type="button" class="btn btn-primary" id="Add" data-dismiss="modal" >保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!--添加层结束01-->
+
+<!--添加层02-->
+    <div class="modal fade" id="exampleModal02" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exampleModalLabel">添加机房信息</h4>
+          </div>
+          <div class="modal-body">
+            <fieldset disabled>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">id:</label>
+                <input type="text" class="form-control" id="id">
+              </div>
+            </fieldset>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">IP:</label>
+                <input type="text" class="form-control" id="ip">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">角色:</label>
+                <input type="text" class="form-control" id="role">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">硬件信息:</label>
+                <input type="text" class="form-control" id="hardware">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">游戏服信息:</label>
+                <input type="text" class="form-control" id="serverinfo">
+              </div>
+              <div class="form-group">
+                <label for="message-text" class="control-label">机房:</label>
+                  <select class="form-control" id="macroom02">
+                      <option>--请选择机房--</option>
+                      {% for i in model.macroom %}
+                          <option value="{{ i.id }}" text={{ i.macroom }}>{{ i.macroom }}</option>
+                      {% endfor %}
+                  </select>
+               </div>
+              <div class="form-group">
+                <label for="message-text" class="control-label">机柜:</label>
+                  <fieldset disabled>
+                      <select id="disabledSelect02" class="form-control cabinet02" style="display: none">
+                        <option>--请先选择机房--</option>
+                      </select>
+                  </fieldset>
+                  {% for k,v in model.cabinet.items %}
+                      {% if v %}
+                          <select class="form-control cabinet02 {{ k.id }}02 {{ k.macroom }}" id="{{ k.macroom }}" auto="Test">
+                            {% for i in v %}
+                                <option id="{{ i.id }}" value="{{ i.id }}" text={{ i.cabinet }}>{{ i.cabinet }}</option>
+                            {% endfor %}
+                          </select>
+                      {% endif %}
+                  {% endfor %}
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="Reclose()">关闭</button>
+            <button type="button" class="btn btn-danger" id="Change" data-dismiss="modal">修改</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!--添加层结束02-->
+
+{% endblock %}
+
+{% block js %}
+    {% load staticfiles %}
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+    <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        $('#exampleModal').on('show.bs.modal', function (event) {
+          var button = $(event.relatedTarget) // Button that triggered the modal
+          var recipient = button.data('whatever') // Extract info from data-* attributes
+          // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+          // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+          var modal = $(this)
+          modal.find('.modal-title').text('添加 ' + recipient)
+          modal.find('.modal-body input').val('')
+        });
+
+        $('#exampleModal02').on('show.bs.modal', function (event) {
+          var button = $(event.relatedTarget) // Button that triggered the modal
+          var recipient = button.data('whatever') // Extract info from data-* attributes
+          // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+          // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+          var modal = $(this)
+          modal.find('.modal-title').text('修改 ' + recipient)
+          //modal.find('.modal-body input').val(recipient)
+        });
+
+        <!--二级联动-->
+        $(function(){
+           $('#macroom').change(function(){
+               var value = $(this).val();
+                if (value == "--请选择机房--"){
+                    $('.cabinet').hide();
+                    $('#disabledSelect').show();
+                }else{
+                    $('.cabinet').hide();
+                    $('.'+value).show();
+                }
+           })
+        });
+        <!--二级联动结束-->
+
+        <!--修改二级联动-->
+        $(function(){
+           $('#macroom02').change(function(){
+                var value = $(this).val();
+                if (value == "--请选择机房--"){
+                    $('.cabinet02').hide();
+                    $('#disabledSelect02').show();
+                }else{
+                    $('.cabinet02').hide();
+                    $('.'+value+"02").show();
+                }
+           })
+        });
+        <!--修改二级联动结束-->
+
+        <!--添加框联动复位-->
+        /*
+        function Reclose(){
+            //console.log($("#macroom").find("option[text='韩国']"))
+            //$("#macroom").find("option[text='Pchoice']").attr("selected",true);
+            //$("#macroom option[value='Pchoice']").attr('selected',true);
+            $('.cabinet').hide();
+            $('#disabledSelect').show();
+        }
+        */
+        <!--添加框联动复位完成-->
+
+        function Reclose() {
+            //刷新
+            window.location.reload();
+        };
+
+
+        function Edit(arg){
+            $(arg).parent().prevAll().each(function(){
+                var value = $(this).text();
+                var target_id = $(this).attr('auto');
+                //console.log(value);
+                //console.log(target_id);
+                //console.log($('#'+target_id).is('select'))
+                if($('#'+target_id).is('select')){
+                    if(value == 'None'){
+                        $('#disabledSelect02').show();
+                        $("select[auto=Test]").hide();
+                    }else{
+                        //console.log($('#'+target_id).find("option[text='"+value+"']"));
+                        $('#' + target_id).find("option[text='" + value + "']").attr('selected', true);
+                        //$('.cabinet02').hide();
+                        $('.' + target_id).removeAttr('auto');
+                        $("select[auto=Test]").hide();
+                        //console.log("."+target_id)
+                    }
+                }else{
+                    $("#"+target_id).val(value);
+                }
+
+
+            });
+        }
+
+        //全选
+        $(function(){
+           $('#choice').click(function(){
+               if($('#choice').is(':checked')){
+                   $('.delete').attr('checked',true)
+               }else{
+                   $('.delete').attr('checked',false);
+                   window.location.reload()
+               }
+           })
+        });
+
+        $(function () {
+            $('#Add').click(function(){
+                var csrftoken = $.cookie('csrftoken');
+                var baseurl = "http://127.0.0.1:8000/api/mgroom/"
+                var baseurl02 = 'http://127.0.0.1:8000/api/mgcb/'
+                var maroom = $('#macroom').val()
+                var Cb = ''
+                if(maroom == '--请选择机房--'){
+                    maroom = null
+                    Cb = null
+                }else{
+                    Cb = baseurl02+$('#'+maroom).val()+'/'
+                    maroom = baseurl+maroom+'/'
+                }
+
+                var info = JSON.stringify({'ip':$('#ip01').val(),'role':$('#role01').val(),'hardwareinfo':$('#hardware01').val(),'gameinfo':$('#servers').val(),'cb':Cb,'room':maroom})
+                //console.log(info)
+                $.ajax({
+                    type:'post',
+                    url:'/api/mgma/',
+                    contentType:'application/json',
+                    data:info,
+                    success:function(){
+                       var ele = '<div id="myAlert" class="alert alert-success">';
+                       ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a><strong>";
+                       ele = ele + "添加机器: " + "</strong>" + $('#ip').val() + " "+"successful!";
+                       $(".infomation").append(ele);
+                    },
+                    error:function(XMLHttpRequest){
+                       var info = XMLHttpRequest['responseText'];
+                       var ele = '<div id="myAlert" class="alert alert-danger">';
+                       ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a>";
+                       ele = ele + info + "</div>";
+                       $(".infomation").append(ele);
+                   }
+                })
+            })
+        });
+
+        $(function(){
+            $('#Change').click(function(){
+                var csrftoken = $.cookie('csrftoken');
+                var basurl = "/api/mgma/"+$('#id').val()+'/'
+                var basurl01 ='http://127.0.0.1:8000/api/mgroom/'
+                var basurl02 ='http://127.0.0.1:8000/api/mgcb/'
+                var room = ''
+                var Cb = ''
+                //判断机房与机柜是否为空
+                if($('#macroom02').val() == '--请选择机房--'){
+                    room = null
+                    Cb = null
+                }else{
+                    room = basurl01+$('#macroom02').val()+'/'
+                    Cb = basurl02+$('.'+$('#macroom02').val()+'02').val()+"/"
+                    console.log($('.'+$('#macroom02').val()+'02').val())
+                }
+                var info = JSON.stringify({'ip':$('#ip').val(),'role':$('role').val(),'hardwareinfo':$('#hardware').val(),'gameinfo':$('#serverinfo').val(),'room':room,'cb':Cb})
+                console.log(info)
+                //console.log($('#macroom02').val())
+                $.ajax({
+                    type:'patch',
+                    url:basurl,
+                    contentType:'application/json',
+                    data:info,
+                    success:function(){
+                       var ele = '<div id="myAlert" class="alert alert-success">';
+                       ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a><strong>";
+                       ele = ele + "修改机器: " + "</strong>" + $('#ip').val() + " "+"successful!";
+                       $(".infomation").append(ele);
+                    },
+                    error:function(XMLHttpRequest){
+                       var info = XMLHttpRequest['responseText'];
+                       var ele = '<div id="myAlert" class="alert alert-danger">';
+                       ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a>";
+                       ele = ele + info + "</div>";
+                       $(".infomation").append(ele);
+                    }
+                })
+            })
+        });
+        $(function(){
+            $('#delete').click(function(){
+                var Dels = [];
+                var csrftoken = $.cookie('csrftoken');
+                $("input[name='test']:checked").each(function(){
+                    var Del = $(this).val();
+                    //找到所有要删除被选中项
+                    Dels.push(Del)
+                });
+                if(Dels.length > 0){
+                    //console.log(Dels)
+                    $.each(Dels,function(i,val){
+                        $.ajax({
+                            type:'delete',
+                            url:'/api/mgma/'+val+'/',
+                            contentType:'application/json',
+                            success:function(){
+                                var ele = '<div id="myAlert" class="alert alert-success">'
+                                ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a><strong>";
+                                ele = ele + "删除机柜: " + "</strong>" + "机器"+ val + " "+"successful!";
+                                ele = ele + "</dev>";
+                                $('.infomation').append(ele)
+                            },
+                            error:function(XMLHttpRequest){
+                                   var info = XMLHttpRequest['responseText'];
+                                   var ele = '<div id="myAlert" class="alert alert-danger">';
+                                   ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a>";
+                                   ele = ele + info + "</div>";
+                                   $(".infomation").append(ele);
+                            }
+                        })
+                    })
+                }else{
+                    var ele = '<div id="myAlert" class="alert alert-danger">';
+                    ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a><strong>";
+                    ele = ele + "删除机器: " + "</strong>" + "不能为空" + " "+"!!!!!";
+                    ele = ele + "</dev>";
+                    $(".infomation").append(ele)
+                }
+            })
+        })
+    </script>
+{% endblock %}

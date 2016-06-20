@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/html">
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/static/css/login.css" type="text/css"/>
+    <link href="/static/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="/static/css/mytemp.css"/>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+
+    {% block css %} {% endblock %}
+</head>
+<body>
+    <div class="cover"></div>
+    <form action="/login/" method="post" accept-charset="utf-8">{% csrf_token %}
+        <div class="contains">
+            <div class="title"><span>用户登录</span></div>
+            {% if invailduspd %}
+                <p class="bg-danger info">Invaild username or password!!</p>
+            {% endif %}
+            {% if inactive %}
+                <p class="bg-danger info">No user or user is inactive</p>
+            {% endif %}
+            <ul>
+                <li><label class="control-label" for="exampleusername">用户名:</label>
+                {{ model.username }}</li>
+                <li><label class="control-label" for="exampleInputPassword1">密码:</label>
+                {{ model.password }}</li>
+            </ul>
+            <div class="login_btn">
+                <button type="submit" class="login btn btn-primary">登录</button>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
