@@ -1,0 +1,11 @@
+1
+django 关闭debug后static失效,http://stackoverflow.com/questions/18005574/django-1-5-get-404-on-static-files
+
+2
+rest-formwork 下 permissions模块加上一个认证类
+class CustomAuthenticated(BasePermission):
+    def has_permission(self, request, view):
+        print "star......."
+        if request.session.get('islogin'):
+            return True
+3.安装django-rest_framework
