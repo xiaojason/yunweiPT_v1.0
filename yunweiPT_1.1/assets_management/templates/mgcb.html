@@ -1,0 +1,166 @@
+{% extends 'index.html' %}
+
+{% block body %}
+    <div class="infomation"></div>
+    <ul class="nav nav-tabs">
+        <li role="presentation"><a href="/assets/mgroom/1/">机房管理</a></li>
+        <li role="presentation" class="active"><a href="/assets/mgcb/1/">机柜管理</a></li>
+        <li role="presentation"><a href="/assets/mgma/1/">机器管理</a></li>
+    </ul>
+    <div class="TabLe">
+        <table class="table table-striped">
+            <tr><th>选择</th><th>id</th><th>机柜</th><th>机房</th></tr>
+            {% for i in model.result %}
+                <tr><td><input type="checkbox" class="delete" name="test" value="{{ i.id }}"/></td><td>{{ i.id }}</td><td>{{ i.cabinet}}</td><td>{{ i.room}}</td></tr>
+            {% endfor %}
+        </table>
+        <input type="checkbox" id="choice"/>:全选&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-danger" id="delete">删除</button>
+        {{ model.pager }}
+    </div>
+    <div class="addroom">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="机柜信息">添加机柜</button>
+    </div>
+    <div style="height: 50px;"></div>
+{% endblock %}
+
+<!--添加层-->
+{% block mtk %}
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exampleModalLabel">添加机房信息</h4>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">机柜描述:</label>
+                <input type="text" class="form-control" id="message-text">
+              </div>
+              <div class="form-group">
+                <label for="message-text" class="control-label">机房:</label>
+                  <select class="form-control" id="macroom">
+                      <option selected="selected">--请选择机房--</option>
+                      {% for i in model.macroom %}
+                          <option value="{{ i.id }}">{{ i.macroom }}</option>
+                      {% endfor %}
+                  </select>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="Reclose()">关闭</button>
+            <button type="button" class="btn btn-primary" id="Add" data-dismiss="modal">保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!--添加层结束-->
+
+{% endblock %}
+
+{% block js %}
+    {% load staticfiles %}
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+    <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        $('#exampleModal').on('show.bs.modal', function (event) {
+          var button = $(event.relatedTarget) // Button that triggered the modal
+          var recipient = button.data('whatever') // Extract info from data-* attributes
+          // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+          // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+          var modal = $(this)
+          modal.find('.modal-title').text('添加 ' + recipient)
+          modal.find('.modal-body input').val('')
+        });
+
+    function Reclose(){
+            //刷新
+            window.location.reload();
+        }
+
+        //全选
+        $(function(){
+           $('#choice').click(function(){
+               if($('#choice').is(':checked')){
+                   $('.delete').attr('checked',true)
+               }else{
+                   $('.delete').attr('checked',false);
+                   window.location.reload()
+               }
+           })
+        });
+
+        $(function(){
+            $('#Add').click(function(){
+                var baseurl = 'http://127.0.0.1:8000/api/mgroom/'
+                var info = JSON.stringify({'cabinet':$('#message-text').val(),'room':baseurl+$('#macroom').val()+'/'})
+                var csrftoken = $.cookie('csrftoken');
+                console.log(info)
+                $.ajax({
+                    type:'post',
+                    url:'/api/mgcb/',
+                    contentType:"application/json",
+                    data:info,
+                    success:function(){
+                       var ele = '<div id="myAlert" class="alert alert-success">';
+                       ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a><strong>";
+                       ele = ele + "添加机柜: " + "</strong>" + $('#message-text').val() + " "+"successful!";
+                       ele = ele + "</dev>";
+                       $(".infomation").append(ele);
+                    },
+                    error:function(XMLHttpRequest){
+                       var info = XMLHttpRequest['responseText'];
+                       var ele = '<div id="myAlert" class="alert alert-danger">';
+                       ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a>";
+                       ele = ele + info + "</div>";
+                       $(".infomation").append(ele);
+                   }
+                })
+            })
+        })
+
+        $(function(){
+            $('#delete').click(function(){
+                var Dels = [];
+                var csrftoken = $.cookie('csrftoken');
+                $("input[name='test']:checked").each(function(){
+                    var Del = $(this).val();
+                    //找到所有要删除被选中项
+                    Dels.push(Del)
+                });
+                if(Dels.length > 0){
+                    //console.log(Dels)
+                    $.each(Dels,function(i,val){
+                        $.ajax({
+                            type:'delete',
+                            url:'/api/mgcb/'+val+'/',
+                            contentType:'application/json',
+                            success:function(){
+                                var ele = '<div id="myAlert" class="alert alert-success">'
+                                ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a><strong>";
+                                ele = ele + "删除机柜: " + "</strong>" + "机柜"+ val + " "+"successful!";
+                                ele = ele + "</dev>";
+                                $('.infomation').append(ele)
+                            },
+                            error:function(XMLHttpRequest){
+                                   var info = XMLHttpRequest['responseText'];
+                                   var ele = '<div id="myAlert" class="alert alert-danger">';
+                                   ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a>";
+                                   ele = ele + info + "</div>";
+                                   $(".infomation").append(ele);
+                            }
+                        })
+                    })
+                }else{
+                    var ele = '<div id="myAlert" class="alert alert-danger">';
+                    ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a><strong>";
+                    ele = ele + "删除机柜: " + "</strong>" + "不能为空" + " "+"!!!!!";
+                    ele = ele + "</dev>";
+                    $(".infomation").append(ele)
+                }
+            })
+        })
+    </script>
+{% endblock %}

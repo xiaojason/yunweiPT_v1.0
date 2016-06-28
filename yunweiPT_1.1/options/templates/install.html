@@ -1,0 +1,143 @@
+{% extends 'index_option.html' %}
+
+{% block css %}
+
+    <style type="text/css">
+        .install{
+            width: 50%;
+            margin-right: auto;
+            margin-left: auto;
+            margin-bottom: 1%;
+        }
+        .installinfo{
+            margin-top: 30px;
+        }
+
+        .outtext{
+            width: 100%;
+        }
+        .output{
+            width: 80%;
+            height: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            overflow-y: auto;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+<div class="infomation"></div>
+<ul class="nav nav-tabs">
+    <li role="presentation" class="active"><a href="/options/install/">安装游戏服</a></li>
+    <li role="presentation"><a href="/options/update/">更新游戏服</a></li>
+    <li role="presentation"><a href="/options/open/">开启游戏服</a></li>
+    <li role="presentation"><a href="/options/close/">关闭游戏服</a></li>
+</ul>
+<div style="height: 20px;"></div>
+<!--参数项开始-->
+<div class="install">
+        <div class="form-group">
+          <label for="disabledTextInput">安装游戏服id</label>
+          <input type="text" id="ser_id" class="form-control" placeholder="多个服用逗号隔开">
+        </div>
+        <div class="form-group">
+          <label for="disabledSelect">安装svn版本号</label>
+          <input type="text" id="svn_v" class="form-control" placeholder="svn Version">
+        </div>
+        <div class="form-group">
+          <label for="disabledSelect">游戏服名</label>
+          <input type="text" id="ser_name" class="form-control" placeholder="多个服用逗号隔开">
+        </div>
+        <div class="form-group">
+          <label for="disabledSelect">装服提示语</label>
+          <input type="text" id="ser_message" class="form-control" placeholder="空格用下划线代替">
+        </div>
+        <button type="submit" class="btn btn-success" id="run">执行</button>
+
+</div>
+<!--参数项结束-->
+
+    <!--脚本输出对话框-->
+        <div class="outtext">
+            <textarea class="output" rows="15" id="show"></textarea>
+        </div>
+    <!--脚本输出对话框完-->
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $('#run').click(function(){
+                var csrftoken = $.cookie('csrftoken');
+                //console.log(csrftoken)
+                window.readline = 0;
+                var id = $('#ser_id').val();
+                var ver = $('#svn_v').val();
+                var names = $('#ser_name').val();
+                var mess = $('#ser_message').val();
+                if(id == ""){
+                    id = "None"
+                }
+                if(ver == ""){
+                    ver = "None"
+                }
+                if(names == ""){
+                    names = "None"
+                }
+                if(mess == ""){
+                    mess = "None"
+                }
+                var info = JSON.stringify({'ser_id':id,'svn_v':ver,'names':names,'mess':mess,'option':'install'});
+                var Info = [];
+                $.ajax({
+                    type:'post',
+                    headers:{'X-CSRFToken':csrftoken},
+                    url:'/options/remoteoptions/',
+                    data:info,
+                    dataType: 'json',
+                    async:false,
+                    success:function(arg){
+                        if(arg['status'] == 'error') {
+                            var ele = '<div id="myAlert" class="alert alert-danger">';
+                            ele = ele + "<a href='#' class='close' data-dismiss='alert'>&times;</a><strong>";
+                            ele = ele + "安装游戏服: " + "</strong>" + "所有参数不能为空" + " " + "!!!!!";
+                            ele = ele + "</dev>";
+                            $('.infomation').append(ele)
+                        }
+                    },
+                    error:function(){
+                        //console.log('lala')
+                    }
+                })
+
+                setInterval(function(){
+                    var lineinfo = JSON.stringify({'line':window.readline})
+                    //console.log(lineinfo)
+                    var height = document.getElementById("show").scrollHeight
+                    //console.log(height)
+                    $('#show').scrollTop(height)
+                    $.ajax({
+                        type:'post',
+                        headers:{'X-CSRFToken':csrftoken},
+                        url:'/options/readoutput/',
+                        dataType:'json',
+                        data: lineinfo,
+                        success:function(arg){
+                            //console.log(arg)
+                            window.readline = arg['lines']
+                            var content = arg['content']
+                            $('.output').append(content)
+                        }
+                    })
+                },2000)
+
+
+            })
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/html">
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <!-- Bootstrap -->
+    {% load staticfiles %}
+    <link href="/static/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="{% static 'css/mytemp.css' %}"/>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+
+</head>
+<body>
+    <div class="container">
+        <h2 class="form-signin-heading">欢迎登录</h2>
+        <input type="text" class="form-control" placeholder="Username" required autofocus/>
+        <input type="password" class="form-control" placeholder="Password" required/>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+    </div>
+</body>
+
+
+</html>

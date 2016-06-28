@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>弹弹堂运维平台v1.0</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/new_index/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Add custom CSS here -->
+    <link href="/static/new_index/css/sb-admin.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/new_index/font-awesome/css/font-awesome.min.css">
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="/static/new_index/css/morris-0.4.3.min.css">
+    <link rel="stylesheet" href="/static/css/mytemp.css"/>
+    {% block css %} {% endblock %}
+  </head>
+
+  <body>
+
+    <div id="wrapper">
+
+      <!-- Sidebar -->
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <span class="navbar-brand" style="color: #ffffff;">运维平台v1.0</span>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav side-nav">
+            {% if user_mg_1 %}
+                <li class="active"><a href="/user/info/1/"><i class="fa fa-dashboard"></i> 用户管理</a></li>
+            {% endif %}
+            {% if assets_mg_2 %}
+                <li><a href="/assets/mgroom/1/"><i class="fa fa-bar-chart-o"></i> 资产管理</a></li>
+            {% endif %}
+            {% if options_3 %}
+                <li><a href="/options/install/"><i class="fa fa-edit"></i> 操作管理</a></li>
+            {% endif %}
+          </ul>
+
+          <form name='form1' action='/user/logout/' method='post'>
+              {% csrf_token %}
+          <ul class="nav navbar-nav navbar-right navbar-user">
+            <li class="dropdown user-dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> 当前用户:{{user}} <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li class="divider"></li>
+                <li><a href='javascript:document.form1.submit();'><i class="fa fa-power-off"></i> <font color='#000000'>Log Out</font></a></li>
+              </ul>
+            </li>
+          </ul>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+      <div id="page-wrapper">
+
+        <div class="row">
+          <div class="col-lg-12">
+            {% block body %} {% endblock %}
+
+          <div class="bottom">
+                <div class="container bot">
+                    <span>欢迎登录运维平台</span>
+                </div>
+            </div>
+          </div>
+        </div><!-- /.row -->
+
+      </div><!-- /#page-wrapper -->
+
+    </div><!-- /#wrapper -->
+
+
+    <!-- JavaScript -->
+    <script src="/static/new_index/js/jquery-1.10.2.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/new_index/js/bootstrap.js"></script>
+
+    <!-- Page Specific Plugins -->    <script src="/static/new_index/js/raphael-min.js"></script>
+    <script src="/static/new_index/js/morris-0.4.3.min.js"></script>
+    <script src="/static/new_index/js/morris/chart-data-morris.js"></script>
+    <script src="/static/new_index/js/tablesorter/jquery.tablesorter.js"></script>
+    <script src="/static/new_index/js/tablesorter/tables.js"></script>
+    <script type="text/javascript">
+        $('.dropdown-toggle').dropdown()
+    </script>
+
+
+    {% block mtk %} {% endblock %}
+    {% block js %}{% endblock %}
+  </body>
+</html>
