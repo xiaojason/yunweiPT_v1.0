@@ -90,6 +90,7 @@ def close_server(request):
     return render_to_response('close.html',info,context_instance=RequestContext(request))
 
 
+#调用脚本与参数传递接口
 @check_login_option_privilege
 def remoteoptions(request):
     if request.method == 'POST' and request.is_ajax():
@@ -119,7 +120,7 @@ def remoteoptions(request):
             file = open('d:\py_work\\test.txt','w')
             file.close()
             info = json.dumps({'status':'error'})
-            return HttpResponse(info,context_instance=RequestContext(request))
+            return HttpResponse(info)
             #for i in output.stdout.readlines():
             #    print i,
 

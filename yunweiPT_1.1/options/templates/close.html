@@ -68,6 +68,7 @@
             $('#run').click(function(){
                 window.readline = 0;
                 var csrftoken = $.cookie('csrftoken');
+                $('#run').attr('disabled','disabled')
                 var id = $('#ser_id').val();
                 var mess = $('#mess').val();
                 var option = $('#close').val();

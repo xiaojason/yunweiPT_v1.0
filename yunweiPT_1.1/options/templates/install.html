@@ -76,6 +76,7 @@
                 var csrftoken = $.cookie('csrftoken');
                 //console.log(csrftoken)
                 window.readline = 0;
+                $('#run').attr('disabled','disabled')
                 var id = $('#ser_id').val();
                 var ver = $('#svn_v').val();
                 var names = $('#ser_name').val();

@@ -67,6 +67,7 @@
             $('#run').click(function(){
                 var csrftoken = $.cookie('csrftoken');
                 window.readline = 0;
+                $('#run').attr('disabled','disabled')s
                 var id = $('#ser_id').val();
                 var ver = $('#svn_v').val();
                 if(id == ""){
