@@ -162,3 +162,43 @@ def logout(request):
     if request.method == "POST":
         auth.logout(request)
         return redirect('/login/',context_instance=RequestContext(request))
+
+@check_login_info
+def changepassword(request):
+    #用户与权限
+    user = request.session.get('user')
+    privilege = request.session.get('privilege')
+    info = {}
+    pris = ['','user_mg_1','assets_mg_2','options_3']
+    for i in xrange(1,4):
+        if str(i) in privilege:
+            info[pris[i]] = True
+        else:
+            info[pris[i]] = False
+    info['user'] = user
+    return render_to_response('changepassword.html',info,context_instance=RequestContext(request))
+
+#修改密码
+@check_login_info
+def chgpwd(request):
+    if request.method == "POST" and request.is_ajax():
+        data = json.loads(request.body)
+        password = data['password']
+        password = password.encode("utf-8")
+        user = request.session['user']
+        user = user.encode("utf-8")
+        #重设密码
+        if password != "":
+            str = ''.join(sample('AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789', 8))
+            data01 = password + str
+            encry = hashlib.md5(data01).hexdigest()
+            data02 = encry + '@' + str
+            da = models.userinfo.objects.get(username='%s'%(user))
+            da.password = data02
+            da.save()
+            info = json.dumps({'status':'OK'})
+            return HttpResponse(info)
+        #密码不为空
+        else:
+            info = json.dumps({'status':'error'})
+            return HttpResponse(info)

@@ -30,5 +30,6 @@ urlpatterns = [
     url(r'^options/',include('options.urls')),
     url(r'^api/', include('api.urls')),
     url(r'^login/',login),
+    url(r'^changepassword/',changepassword),
     url(r'^404/',pager_not_found),
 ]

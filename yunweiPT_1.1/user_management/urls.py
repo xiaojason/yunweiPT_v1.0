@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'encryption/',encrypwd ),
     url(r'checkpwd/',checkpassword ),
     url(r'logout/',logout ),
+    url(r'chgpwd/',chgpwd ),
 ]
